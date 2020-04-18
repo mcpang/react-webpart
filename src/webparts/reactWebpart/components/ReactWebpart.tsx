@@ -2,10 +2,20 @@ import * as React from 'react';
 import styles from './ReactWebpart.module.scss';
 import { IReactWebpartProps } from './IReactWebpartProps';
 import { escape } from '@microsoft/sp-lodash-subset';
+//= additional imports --------------------------------------
+
+// == PnP SP ================================
+import { sp, IItemAddResult } from "@pnp/sp/presets/all";
 import {
   TextField, Dropdown, Toggle, Checkbox, PrimaryButton, DefaultButton, Panel,
   PanelType, Dialog, DialogType, DialogFooter, IDropdownOption, DropdownMenuItemType, IDropdownStyles, Stack, IStackTokens,
 } from 'office-ui-fabric-react';
+
+// ==========================================
+
+//= end additional imports -----------------------------------
+
+
 const options: IDropdownOption[] = [
   { key: 'apple', text: 'Apple' },
   { key: 'banana', text: 'Banana' },
@@ -37,7 +47,7 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
       Name: 'Enter first and last name',
       Address: '',
       Department: '',
-      formStatus: ''  
+      formStatus: 'Ready...'  
     }
     this.handleNameField = this.handleNameField.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -87,6 +97,7 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
                 <DefaultButton text="Cancel" onClick={_alertClicked} allowDisabledFocus disabled={this.state.disabled} checked={this.state.checked} />
                 <PrimaryButton text="Submit" onClick={this.submitForm} allowDisabledFocus disabled={this.state.disabled} checked={this.state.checked} />
               </Stack>
+              Form Status: {this.state.formStatus}
             </div>
           </div>
         </div>
@@ -109,9 +120,14 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
       formStatus: 'Processing form'
     });
 
-    alert('the value of the name field:' + this.state.Name);
-
-
+    sp.web.lists.getByTitle(this.props.description).items.add({
+      'Title': `${this.state.Name} === ${new Date()}`
+    }).then((iar: IItemAddResult) => {
+      this.setState({
+        formStatus: 'Form saved.'
+      })
+    })
+  
   };
 
 

@@ -21,7 +21,7 @@
     "description": { "default": "react-webpart description" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "react-webpart"
+      "description": "Employee Registration"
     }
   }]
 }
