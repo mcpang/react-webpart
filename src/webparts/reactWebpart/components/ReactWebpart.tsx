@@ -31,6 +31,7 @@ export interface IActionButtonProps {
 
 }
 export interface IEmployeeProps {
+  Id?:Number;
   Name: string;
   Address: string;
   Department: string;
@@ -68,7 +69,7 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
                 <label className="ms-Label title">Employee Name</label>
               </div>
               <div className="ms-Grid-col ms-u-sm8 block">
-                <TextField value={this.state.Name} onChanged={this.handleNameField} />
+                <TextField value={this.state.Name} onBlur={this.handleNameField} />
               </div>
             </div>
             <div className={`ms-Grid-row ms-bgColor-themeDark ms-fontColor-white ${styles.row}`}>
@@ -97,7 +98,8 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
             <div className={`ms-Grid-row ms-bgColor-themeDark ms-fontColor-white ${styles.row}`}>
 
               <Stack horizontal tokens={stackTokens}>
-                <DefaultButton text="Cancel" onClick={_alertClicked} allowDisabledFocus disabled={this.state.disabled} checked={this.state.checked} />
+
+                <DefaultButton text="Delete" onClick={_alertClicked} allowDisabledFocus disabled={this.state.disabled} checked={this.state.checked} />
                 <PrimaryButton text="Submit" onClick={this.submitForm} allowDisabledFocus disabled={this.state.disabled} checked={this.state.checked} />
               </Stack>
               Form Status: {this.state.formStatus}
@@ -113,9 +115,9 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
     
   }
 
-  private handleNameField(fieldValue: string): void {
+  private handleNameField(ev: React.FocusEvent<HTMLInputElement>): void {
     return this.setState({      
-        Name: fieldValue   
+        Name: ev.target.value   
     });
   }
   private handleAddressField(fieldValue: string): void {
@@ -138,9 +140,10 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
       'EmployeeName':  `${this.state.Name}`,
       'Description': `${this.state.Address}`,
       'Department': `${this.state.Department}`
-    }).then((iar: IItemAddResult) => {
+    }).then((result: IItemAddResult) => {
+      //const item: IEmployeeProps = result.data as IEmployeeProps;
       this.setState({
-        formStatus: 'Form saved.'
+        formStatus: `The item has been added with this new id: ${result.data.Id}`
       })
     })
   
