@@ -44,12 +44,13 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
    constructor(props: IReactWebpartProps) {
     super(props);
     this.state = {
-      Name: 'Enter first and last name',
-      Address: '',
+      Name: 'Tommy Pang',
+      Address: '204 Hidden Circle NW',
       Department: '',
       formStatus: 'Ready...'  
     }
     this.handleNameField = this.handleNameField.bind(this);
+    this.handleAddressField = this.handleAddressField.bind(this);
     this.submitForm = this.submitForm.bind(this);
 
 
@@ -74,7 +75,7 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
                 <label className="ms-Label title">Address</label>
               </div>
               <div className="ms-Grid-col ms-u-sm8 block">
-                <TextField value='204 Hidden circle NW' multiline />
+                <TextField value={this.state.Address} multiline onChanged={this.handleAddressField} />
               </div>
             </div>
             <div className={`ms-Grid-row ms-bgColor-themeDark ms-fontColor-white ${styles.row}`}>
@@ -85,9 +86,9 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
                 <Dropdown placeHolder="Select a department"
                   defaultSelectedKey="Finance"
                   options={[
-                    { key: 'IT', text: 'IT' },
+                    { key: 'Information Technology', text: 'Information Technology' },
                     { key: 'Finances', text: 'Finances' },
-                    { key: 'Marketings', text: 'Marketings' }]}
+                    { key: 'Human Resources', text: 'Human Resources' }]}
                 />
               </div>
             </div>
@@ -115,13 +116,20 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
         Name: fieldValue   
     });
   }
+  private handleAddressField(fieldValue: string): void {
+    return this.setState({      
+        Address: fieldValue   
+    });
+  }
   private submitForm(): void {
     this.setState({
       formStatus: 'Processing form'
     });
 
     sp.web.lists.getByTitle(this.props.description).items.add({
-      'Title': `${this.state.Name} === ${new Date()}`
+      'Title': `${this.state.Name} === ${new Date()}`,
+      'EmployeeName':  `${this.state.Name}`,
+      'Description': `${this.state.Address}`
     }).then((iar: IItemAddResult) => {
       this.setState({
         formStatus: 'Form saved.'
