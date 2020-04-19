@@ -46,11 +46,12 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
     this.state = {
       Name: 'Tommy Pang',
       Address: '204 Hidden Circle NW',
-      Department: '',
+      Department: 'Information Technology',
       formStatus: 'Ready...'  
     }
     this.handleNameField = this.handleNameField.bind(this);
     this.handleAddressField = this.handleAddressField.bind(this);
+    this.handleDepartmentField = this.handleDepartmentField.bind(this);
     this.submitForm = this.submitForm.bind(this);
 
 
@@ -84,11 +85,12 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
               </div>
               <div className="ms-Grid-col ms-u-sm8 block">
                 <Dropdown placeHolder="Select a department"
-                  defaultSelectedKey="Finance"
+                  defaultSelectedKey={this.state.Department}
                   options={[
                     { key: 'Information Technology', text: 'Information Technology' },
                     { key: 'Finances', text: 'Finances' },
                     { key: 'Human Resources', text: 'Human Resources' }]}
+                    onChanged={this.handleDepartmentField}
                 />
               </div>
             </div>
@@ -121,6 +123,11 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
         Address: fieldValue   
     });
   }
+  private handleDepartmentField = (item: IDropdownOption): void => {
+    console.log('here is the things updating...' + item.key + ' ' + item.text + ' ' + item.selected);
+    this.setState({ Department: item.text });
+    
+  }
   private submitForm(): void {
     this.setState({
       formStatus: 'Processing form'
@@ -129,7 +136,8 @@ export default class ReactWebpart extends React.Component<IReactWebpartProps, IE
     sp.web.lists.getByTitle(this.props.description).items.add({
       'Title': `${this.state.Name} === ${new Date()}`,
       'EmployeeName':  `${this.state.Name}`,
-      'Description': `${this.state.Address}`
+      'Description': `${this.state.Address}`,
+      'Department': `${this.state.Department}`
     }).then((iar: IItemAddResult) => {
       this.setState({
         formStatus: 'Form saved.'
